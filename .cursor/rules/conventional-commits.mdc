@@ -1,0 +1,99 @@
+---
+description: When performing git commits
+globs: 
+alwaysApply: false
+---
+# Conventional Commits
+
+Always use the Conventional Commits format for commit messages in this project.
+
+## Commit Message Format
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+## Types
+
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation only changes
+- `style`: Changes that do not affect the meaning of the code (white-space, formatting, etc)
+- `refactor`: A code change that neither fixes a bug nor adds a feature
+- `perf`: A code change that improves performance
+- `test`: Adding missing tests or correcting existing tests
+- `build`: Changes that affect the build system or external dependencies
+- `ci`: Changes to our CI configuration files and scripts
+- `chore`: Other changes that don't modify src or test files
+- `revert`: Reverts a previous commit
+
+## Examples
+
+```
+feat: add user authentication feature
+```
+
+```
+fix(auth): properly handle expired tokens
+```
+
+```
+docs: update API documentation with new endpoints
+```
+
+```
+style: format code according to new ESLint rules
+```
+
+```
+refactor: restructure data model layer
+```
+
+```
+test: add unit tests for listing service
+```
+
+```
+chore: update dependencies
+```
+
+## Scope
+
+The scope should be the name of the component or area of the codebase affected by the change:
+
+- `auth`
+- `listings`
+- `ui`
+- `api`
+- `db`
+- `config`
+- etc.
+
+## Breaking Changes
+
+Breaking changes should be indicated with a `!` after the type/scope:
+
+```
+feat(api)!: change behavior of authentication endpoint
+```
+
+Or in the footer with `BREAKING CHANGE:`:
+
+```
+feat: change profile API structure
+
+BREAKING CHANGE: Profile API now requires email confirmation
+```
+
+## Use Imperatives
+
+Descriptions should use the imperative, present tense:
+- "add" not "added" or "adds"
+- "fix" not "fixed" or "fixes"
+- "update" not "updated" or "updates"
+
+Descriptions should not capitalize the first letter or end with a period.

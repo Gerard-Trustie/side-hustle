@@ -1,0 +1,46 @@
+.container {
+  background: linear-gradient(to bottom right, #ffb8c2, #ff4d67);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.bar {
+  position: absolute;
+  background-color: white;
+  opacity: 0;
+  animation-duration: 1.6s;
+  animation-iteration-count: infinite;
+}
+
+.bar1 {
+  animation-name: fadeInOut;
+  animation-delay: 0s;
+}
+
+.bar2 {
+  animation-name: fadeInOut;
+  animation-delay: 0.4s;
+}
+
+.bar3 {
+  animation-name: fadeInOut;
+  animation-delay: 0.8s;
+}
+
+.bar4 {
+  animation-name: fadeInOut;
+  animation-delay: 1.2s;
+}
+
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  25%,
+  75% {
+    opacity: 1;
+  }
+}
