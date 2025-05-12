@@ -44,5 +44,11 @@ export const config = {
   //   "/((?!api|_next/static|_next/image|favicon.ico|login|events|profile).*)",
   // ],
   // PUT MORE paths to protect to this array
-  matcher: ["/home", "/user-search", "/create-post", "/publish-post"],
+  matcher: [
+    "/home",
+    "/user-search",
+    "/create-post",
+    "/publish-post",
+    "/side-hustle",
+  ],
 };

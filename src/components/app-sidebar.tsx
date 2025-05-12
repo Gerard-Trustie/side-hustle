@@ -7,6 +7,7 @@ import {
   Settings,
   LogOut,
   PiggyBank,
+  Briefcase,
 } from "lucide-react";
 
 import {
@@ -50,6 +51,11 @@ const items = [
     title: "Financial Knowledge",
     url: "/knowledge",
     icon: PiggyBank,
+  },
+  {
+    title: "Side-Hustle",
+    url: "/side-hustle",
+    icon: Briefcase,
   },
   {
     title: "Settings",
