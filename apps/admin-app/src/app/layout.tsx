@@ -1,4 +1,4 @@
-import ConfigureAmplifyClientSide from "@/components/ConfigureAmplifyClientSide";
+import ConfigureAmplifyClientSide from '@components/ConfigureAmplifyClientSide';
 import "./globals.css";
 import { Amplify } from "aws-amplify";
 import { config } from "@/utils/awsConfig";

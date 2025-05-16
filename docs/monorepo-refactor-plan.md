@@ -82,6 +82,7 @@ The goal is to maximize code sharing (especially TypeScript types and business l
 - **Admin App**:
   - Use AWS IAM for authentication.
   - For simplicity, you can start with a basic sign-in page that checks IAM credentials, or restrict access by IP/VPC.
+  - **Do NOT add Cognito authentication at this stage.**
   - Later, consider using AWS SSO or Cognito with an admin group for more flexibility.
 
 - **Hustle Hub (Public App)**:
@@ -118,9 +119,9 @@ The goal is to maximize code sharing (especially TypeScript types and business l
 - [x] Move current app to `/apps/admin-app`
 - [x] Scaffold `/apps/hustle-hub` (new Next.js app)
 - [x] Extract and move shared types to `/packages/types`
-- [ ] Extract and move shared utils to `/packages/utils` or `/packages/aws`
-- [ ] Update import paths in both apps
-- [ ] Separate UI components for each app
+- [x] Extract and move shared utils to `/packages/utils` or `/packages/aws`
+- [x] Update import paths in both apps
+- [x] Separate UI components for each app
 - [ ] Implement authentication for both apps (IAM for admin, Cognito for public)
 - [ ] Set up TypeScript project references
 - [ ] **Add TypeScript path aliases in `apps/hustle-hub/tsconfig.json` for shared packages**

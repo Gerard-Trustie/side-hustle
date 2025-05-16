@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { LazyTabContent } from "./userTabContent.client";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@components/ui/tabs";
 
 export const UserInfo = () => {
   const searchParams = useSearchParams();

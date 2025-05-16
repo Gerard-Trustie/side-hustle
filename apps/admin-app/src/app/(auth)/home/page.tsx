@@ -4,9 +4,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@components/ui/card";
 import { Suspense } from "react";
-import AnimatedSpinner from "@/components/AnimatedSpinner";
+import AnimatedSpinner from "@components/AnimatedSpinner";
 import Dashboard from "./Dashboard";
 
 // This is a Server Component by default in Next.js App Router

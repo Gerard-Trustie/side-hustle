@@ -1,13 +1,13 @@
 import { Suspense } from "react";
 import CreatePost from "./createPost.client";
-import AnimatedSpinner from "@/components/AnimatedSpinner";
+import AnimatedSpinner from "@components/AnimatedSpinner";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@components/ui/card";
 
 // Server Component
 export default function Page() {

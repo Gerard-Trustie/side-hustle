@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import SelectTrustie from "@/components/SelectUser";
+import SelectUser from '@components/SelectUser';
 import { createAdminPost } from "@/actions/createAdminPost";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button } from '@components/ui/button';
 
 // New component for file preview
 const FilePreview: React.FC<{ file: File | null }> = ({ file }) => {
@@ -102,7 +102,7 @@ const CreatePost: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
-      <SelectTrustie
+      <SelectUser
         searchTitle="Select Trustie Mentor"
         searchTerm="Trustie"
         showUserInfo={true}

@@ -10,7 +10,7 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from "@/components/ui/table";
+} from "@components/ui/table";
 import {
   Pagination,
   PaginationPrevious,
@@ -18,7 +18,7 @@ import {
   PaginationItem,
   PaginationLink,
   PaginationNext,
-} from "@/components/ui/pagination";
+} from "@components/ui/pagination";
 
 interface SelectPostProps {
   searchTerm: string | null;

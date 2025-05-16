@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { ErrorFallback } from "@/components/ErrorFallback";
+import { ErrorFallback } from "@components/ErrorFallback";
 import { ErrorBoundary } from "react-error-boundary";
 import { getUserBasicProfile } from "@/actions/getUserBasicProfile";
 import { getUserExtendedProfile } from "@/actions/getUserExtendedProfile";

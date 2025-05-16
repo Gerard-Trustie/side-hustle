@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -16,18 +16,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { MultiSelect } from "@/components/ui/multi-select";
+} from "@components/ui/select";
+import { Input } from "@components/ui/input";
+import { Textarea } from "@components/ui/textarea";
+import { Button } from "@components/ui/button";
+import { MultiSelect } from "@components/ui/multi-select";
 import {
   RESOURCE_TYPES,
   RESOURCE_STATUSES,
@@ -36,7 +36,7 @@ import {
 import { addResource, updateResource } from "@/actions/knowledge";
 import { uploadKnowledgeFileToS3 } from "@/actions/s3Actions";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 
 const formSchema = z.object({
   source: z.object({

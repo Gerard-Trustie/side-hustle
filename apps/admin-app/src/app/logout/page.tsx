@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import logo from "@/assets/logo.jpg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@components/ui/button";
 import { Colors } from "@/themes/colors";
 import { clearAuthState } from '@utils/clearAuth';
 import { useRouter } from "next/navigation";

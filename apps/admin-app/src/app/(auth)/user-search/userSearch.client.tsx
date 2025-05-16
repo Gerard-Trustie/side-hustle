@@ -5,12 +5,12 @@ import { searchUser } from "@/actions/searchUser";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { ErrorFallback } from "@/components/ErrorFallback";
-import { UserBasicInfo } from "@/components/userBasicInfo";
+import { ErrorFallback } from '@components/ErrorFallback';
+import { UserBasicInfo } from '@components/userBasicInfo';
 import { TUser } from "@/constants/types";
 import Select from "react-select";
 import { Colors } from "@/themes/colors";
-import { Button } from "@/components/ui/button";
+import { Button } from '@components/ui/button';
 
 export default function UserSearch() {
   const [isLoading, setIsLoading] = useState(false);
@@ -148,11 +148,10 @@ export default function UserSearch() {
         </div>
       ) : null}
       {selectedUserId && (
-        <UserBasicInfo
-          basicProfile={searchResults?.find(
-            (user) => user.userId === selectedUserId
-          )}
-        />
+        (() => {
+          const user = searchResults?.find((u) => u.userId === selectedUserId);
+          return user ? <UserBasicInfo basicProfile={user} size="large" /> : null;
+        })()
       )}
     </ErrorBoundary>
   );

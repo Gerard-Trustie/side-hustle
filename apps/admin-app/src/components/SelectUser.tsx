@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { Colors } from "@/themes/colors";
 import { TUser } from '@types';
-import { UserBasicInfo } from "@/components/userBasicInfo";
+import { UserBasicInfo } from '@components/userBasicInfo';
 import { searchUser } from "@/actions/searchUser";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
@@ -122,12 +122,10 @@ const SelectUser: React.FC<SelectUserProps> = ({
           }}
         />
       </div>
-      {selectedUserId && showUserInfo && (
-        <UserBasicInfo
-          size="large"
-          basicProfile={options?.find((user) => user.userId === selectedUserId)}
-        />
-      )}
+      {selectedUserId && showUserInfo && (() => {
+        const user = options?.find((user) => user.userId === selectedUserId);
+        return user ? <UserBasicInfo size="large" basicProfile={user} /> : null;
+      })()}
     </>
   );
 };

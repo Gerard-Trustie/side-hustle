@@ -7,12 +7,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+} from "@components/ui/table";
+import { Button } from "@components/ui/button";
 import { Edit2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@components/ui/badge";
 import { TResource } from "@/app/(auth)/knowledge/knowledge.types";
-import AnimatedSpinner from "@/components/AnimatedSpinner";
+import AnimatedSpinner from "@components/AnimatedSpinner";
 
 interface ResourceListProps {
   resources: TResource[];

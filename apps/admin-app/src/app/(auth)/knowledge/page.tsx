@@ -5,9 +5,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@components/ui/card";
 import { ResourceManager } from "./resource-manager";
-import AnimatedSpinner from "@/components/AnimatedSpinner";
+import AnimatedSpinner from "@components/AnimatedSpinner";
 
 export default function KnowledgePage() {
   return (

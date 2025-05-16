@@ -1,8 +1,8 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { ModeToggle } from "@/components/ModeToggle";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AdminName } from "@/components/AdminName";
+import { SidebarProvider, SidebarTrigger } from '@components/ui/sidebar';
+import { AppSidebar } from '@components/app-sidebar';
+import { ModeToggle } from '@components/ModeToggle';
+import { Card, CardContent, CardHeader } from '@components/ui/card';
+import { AdminName } from '@components/AdminName';
 
 export default function AuthLayout({
   children,

@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
+import { Badge } from "@components/ui/badge";
+import { Command, CommandGroup, CommandItem } from "@components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import { Button } from "./button";
