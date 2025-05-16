@@ -7,7 +7,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { getUserBasicProfile } from "@/actions/getUserBasicProfile";
 import { getUserExtendedProfile } from "@/actions/getUserExtendedProfile";
 import { getUserSetting } from "@/actions/getUserSetting";
-import { extractFieldsFromQuery } from "@/utils/graphql-utils";
+import { extractFieldsFromQuery } from "@utils/graphql-utils";
 
 // Assuming queries is imported or defined elsewhere
 import * as queries from "../../../graphql/queries";

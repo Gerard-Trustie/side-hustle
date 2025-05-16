@@ -117,7 +117,7 @@ The goal is to maximize code sharing (especially TypeScript types and business l
 - [x] Create `/apps` and `/packages` directories
 - [x] Move current app to `/apps/admin-app`
 - [x] Scaffold `/apps/hustle-hub` (new Next.js app)
-- [ ] Extract and move shared types to `/packages/types`
+- [x] Extract and move shared types to `/packages/types`
 - [ ] Extract and move shared utils to `/packages/utils` or `/packages/aws`
 - [ ] Update import paths in both apps
 - [ ] Separate UI components for each app

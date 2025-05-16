@@ -10,7 +10,7 @@ import { getEventById } from "@/actions/getEventById";
 import { getUserBasicProfile } from "@/actions/getUserBasicProfile";
 import { getS3ImageUrl } from "@/actions/s3Actions";
 import { publishAdminPost } from "@/actions/publishAdminPost";
-import { getOrderedPictures } from "@/utils/objectUtils";
+import { getOrderedPictures } from "@utils/objectUtils";
 import { Button } from "@/components/ui/button";
 
 import AnimatedSpinner from "@/components/AnimatedSpinner";

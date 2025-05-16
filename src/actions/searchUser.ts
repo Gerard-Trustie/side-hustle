@@ -1,6 +1,6 @@
 "use server";
 
-import { invokeLambdaFunction } from "@/utils/lambdaConfig";
+import { invokeLambdaFunction } from "@utils/lambdaConfig";
 
 export const searchUser = async (searchTerm: string) => {
   const result = await invokeLambdaFunction(

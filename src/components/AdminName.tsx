@@ -1,4 +1,4 @@
-import { fetchUserAttributesFromServer } from "@/utils/server-utils";
+import { fetchUserAttributesFromServer } from '@utils/server-utils';
 
 export const AdminName = async () => {
   const currentUser = await fetchUserAttributesFromServer();

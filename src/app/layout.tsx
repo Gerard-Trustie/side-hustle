@@ -1,7 +1,7 @@
 import ConfigureAmplifyClientSide from "@/components/ConfigureAmplifyClientSide";
 import "./globals.css";
 import { Amplify } from "aws-amplify";
-import { config } from "@/utils/awsConfig";
+import { config } from '@/utils/awsConfig';
 import { ThemeProvider } from "@/themes/theme-provider";
 
 console.log("🚀 ~ layout config:", config);

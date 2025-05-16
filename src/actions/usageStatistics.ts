@@ -1,6 +1,6 @@
 "use server";
 
-import { invokeLambdaFunction } from "@/utils/lambdaConfig";
+import { invokeLambdaFunction } from "@utils/lambdaConfig";
 
 export const usageStatistics = async (statsType: string) => {
   const result = await invokeLambdaFunction(

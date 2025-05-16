@@ -1,4 +1,3 @@
-//this run client side!!!
 import {
   fetchAuthSession,
   getCurrentUser,
@@ -47,4 +46,4 @@ export const fetchUserAttributesFromServer = async () => {
 export const cookiesClient = generateServerClientUsingCookies({
   config,
   cookies,
-});
+}); 
