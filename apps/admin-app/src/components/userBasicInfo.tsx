@@ -1,4 +1,4 @@
-import { TUser } from "@/constants/types";
+import { TUser } from '@types';
 import Image from "next/image";
 
 export const UserBasicInfo = ({

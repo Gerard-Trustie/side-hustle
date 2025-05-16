@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { Colors } from "@/themes/colors";
-import { TPost } from "@/constants/types";
+import { TPost } from '@types';
 import { EventBasicInfo } from "@/components/eventBasicInfo";
 import { searchEvent } from "@/actions/searchEvent";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";

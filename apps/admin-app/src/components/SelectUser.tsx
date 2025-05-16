@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { Colors } from "@/themes/colors";
-import { TUser } from "@/constants/types";
+import { TUser } from '@types';
 import { UserBasicInfo } from "@/components/userBasicInfo";
 import { searchUser } from "@/actions/searchUser";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";

@@ -2,7 +2,7 @@
 
 import { docClient } from "@/utils/dbConfig";
 import { UpdateCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
-import { TPost } from "@/constants/types";
+import { TPost } from "@types";
 import { updateAllUsersFeed } from "./updateAllUsersFeed";
 
 export const publishAdminPost = async (inputPost: TPost) => {

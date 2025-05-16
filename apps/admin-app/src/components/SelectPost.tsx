@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TPost } from "@/constants/types";
+import { TPost } from '@types';
 import Image from "next/image";
 import { searchEvent } from "@/actions/searchEvent";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
