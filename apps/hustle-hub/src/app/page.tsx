@@ -1,44 +1,42 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import { TUser } from "@types";
-import { getOrderedPictures } from "@utils/objectUtils";
+
+// Simple test data instead of importing from shared packages for now
+const testUser = {
+  userId: "123",
+  userName: "testuser",
+  email: "test@example.com",
+  phoneNumber: "1234567890",
+  givenName: "Test",
+  familyName: "User",
+  birthdate: "2000-01-01",
+  userRole: "user",
+  familyId: "fam-1",
+  currency: "USD",
+  appLevel: 0,
+  appTheme: 0,
+};
+
+// Simple test utility function
+function getOrderedPictures(pictures: string[]): string[] {
+  return pictures.sort((a, b) => {
+    const aOrder = parseInt(a.split('#')[0]) || 0;
+    const bOrder = parseInt(b.split('#')[0]) || 0;
+    return aOrder - bOrder;
+  });
+}
 
 export default function Home() {
-  // Test usage of shared type and util
-  const user: TUser = {
-    userId: "123",
-    userName: "testuser",
-    email: "test@example.com",
-    phoneNumber: "1234567890",
-    givenName: "Test",
-    familyName: "User",
-    birthdate: "2000-01-01",
-    userRole: "user",
-    familyId: "fam-1",
-    currency: "USD",
-    appLevel: 0,
-    appTheme: 0,
-    setting: {
-      KYC: 1,
-      deviceId: "dev-1",
-      deviceName: "iPhone",
-      notification: [true],
-      privacyCont: 0,
-      privacyGoal: 0,
-      pushToken: "token",
-      confirmation: [true],
-      feature: [true],
-      appTheme: 0,
-      appLevel: 0,
-    },
-  };
   const ordered = getOrderedPictures(["1#picA.jpg", "2#picB.jpg"]);
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <h2>Test import from @types and @utils</h2>
-        <pre>{JSON.stringify(user, null, 2)}</pre>
+        <h2>Hustle Hub - Frontend App</h2>
+        <div>
+          <h3>Test Data:</h3>
+          <pre>{JSON.stringify(testUser, null, 2)}</pre>
+        </div>
         <div>Ordered pictures: {ordered.join(", ")}</div>
         <Image
           className={styles.logo}
