@@ -20,27 +20,50 @@ export const reqResBasedClient = generateServerClientUsingReqRes({
 });
 
 export const fetchSessionFromServer = async () => {
-  const currentSession = await runWithAmplifyServerContext({
-    nextServerContext: { cookies },
-    operation: (contextSpec) => fetchAuthSession(contextSpec),
-  });
-  return currentSession;
+  console.log("🔍 [SERVER-UTILS] Fetching session from server...");
+  try {
+    const currentSession = await runWithAmplifyServerContext({
+      nextServerContext: { cookies },
+      operation: (contextSpec) => fetchAuthSession(contextSpec),
+    });
+    console.log("🔍 [SERVER-UTILS] Session result:", currentSession);
+    console.log("🔍 [SERVER-UTILS] Session tokens present:", !!currentSession?.tokens);
+    return currentSession;
+  } catch (error) {
+    console.error("🔍 [SERVER-UTILS] ❌ Error fetching session:", error);
+    throw error;
+  }
 };
 
 export const fetchUserFromServer = async () => {
-  const currentUser = runWithAmplifyServerContext({
-    nextServerContext: { cookies },
-    operation: (contextSpec) => getCurrentUser(contextSpec),
-  });
-  return currentUser;
+  console.log("🔍 [SERVER-UTILS] Fetching user from server...");
+  try {
+    const currentUser = await runWithAmplifyServerContext({
+      nextServerContext: { cookies },
+      operation: (contextSpec) => getCurrentUser(contextSpec),
+    });
+    console.log("🔍 [SERVER-UTILS] User result:", currentUser);
+    console.log("🔍 [SERVER-UTILS] User ID:", currentUser?.userId);
+    return currentUser;
+  } catch (error) {
+    console.error("🔍 [SERVER-UTILS] ❌ Error fetching user:", error);
+    throw error;
+  }
 };
 
 export const fetchUserAttributesFromServer = async () => {
-  const currentUser = runWithAmplifyServerContext({
-    nextServerContext: { cookies },
-    operation: (contextSpec) => fetchUserAttributes(contextSpec),
-  });
-  return currentUser;
+  console.log("🔍 [SERVER-UTILS] Fetching user attributes from server...");
+  try {
+    const currentUser = await runWithAmplifyServerContext({
+      nextServerContext: { cookies },
+      operation: (contextSpec) => fetchUserAttributes(contextSpec),
+    });
+    console.log("🔍 [SERVER-UTILS] User attributes result:", currentUser);
+    return currentUser;
+  } catch (error) {
+    console.error("🔍 [SERVER-UTILS] ❌ Error fetching user attributes:", error);
+    throw error;
+  }
 };
 
 export const cookiesClient = generateServerClientUsingCookies({
