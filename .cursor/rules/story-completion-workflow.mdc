@@ -1,0 +1,44 @@
+---
+description: Guidelines for completing user stories, including implementation checklist, commit process, pull request workflow, and quality standards. Use this when finishing features, fixing bugs, or updating documentation to ensure consistent workflows and quality."  Keywords: completing stories, git commit, pull request, conventional commits, story implementation, done criteria, quality checks
+globs: 
+alwaysApply: false
+---
+# Story Completion Workflow
+
+## Story Implementation Checklist
+
+- Verify all story tasks are completed (all items checked in the master build plan)
+- Run tests to ensure all functionality works as expected
+- Fix any linting issues and TypeScript errors
+- Ensure documentation is updated to reflect changes
+
+## Git Commit Process
+
+- Follow the conventional commit format:
+  - `feat:` for new features
+  - `fix:` for bug fixes
+  - `docs:` for documentation changes
+  - `refactor:` for code refactoring
+  - `test:` for test-related changes
+  - `chore:` for maintenance tasks
+
+- When a story is complete, update master-build-plan.md:
+  - Change `[ ]` to `[x]` for the completed story
+  - Ensure all subtasks are marked as completed
+
+## Pull Request Workflow
+
+- Commit changes using conventional format (e.g., `feat: implement admin seed CLI`)
+- Create a detailed pull request with:
+  - Reference to the story being implemented
+  - Summary of changes made
+  - Testing approach and results
+  - Screenshots if applicable (for UI changes)
+- Address code review feedback
+- Merge to develop branch after approval
+
+## Post-Implementation
+
+- Update project documentation if necessary
+- If the story is the last one in an epic, verify epic completeness
+- Move on to the next story in the build plan

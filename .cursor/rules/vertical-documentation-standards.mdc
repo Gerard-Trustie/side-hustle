@@ -1,0 +1,78 @@
+---
+description: Standards for documenting user stories and epics following the vertical slice architecture pattern, including file structure, content requirements, and naming conventions. Use this when creating or updating documentation for features, epics, or stories. keywords: vertical documentation, user stories, epic documentation, architecture docs, acceptance criteria, implementation details, testing guide, documentation standards
+globs: 
+alwaysApply: false
+---
+# Vertical Documentation Standards
+
+## Documentation Structure
+
+### Epic Documentation
+
+Each epic should have a dedicated folder under `ai-docs/end-to-end-features/` with the following files:
+
+- `README.md` - Epic overview
+  - Clear description of the epic's purpose and business value
+  - List of all stories within the epic with links
+  - Technical constraints or requirements for the epic
+
+- `architecture.md` - Technical architecture
+  - System design diagrams
+  - Data flow descriptions
+  - Key technical decisions and tradeoffs
+
+- `testing-strategy.md` - Testing approach
+  - Test plan overview
+  - Critical test scenarios
+  - Integration testing requirements
+
+### Story Documentation
+
+Each story should have its own documentation file following this naming convention:
+`story-{number}-{slug}.md` (e.g., `story-1.2-admin-import.md`)
+
+Story documentation should include these sections:
+
+1. **Overview**
+   - User story in "As a... I want... So that..." format
+   - Acceptance criteria
+   - Related stories or dependencies
+
+2. **Implementation Details**
+   - Technical approach
+   - API endpoints affected
+   - Database changes
+   - UI components needed
+
+3. **Testing Guide**
+   - Test scenarios
+   - Edge cases to consider
+   - Manual testing steps if applicable
+
+4. **Documentation Updates**
+   - What documentation needs updating after implementation
+   - API documentation changes
+   - User guide impacts
+
+## Documentation Best Practices
+
+- Keep documentation in sync with code
+- Use screenshots or diagrams for complex UI flows
+- Include code examples for API usage
+- Link to relevant tickets or design files
+- Document known limitations or workarounds
+
+## Example Structure
+
+Epic folder structure example:
+```
+ai-docs/end-to-end-features/epic-1-Data-Model/
+├── README.md
+├── architecture.md
+├── testing-strategy.md
+├── story-1.1-schema-design.md
+├── story-1.2-admin-import.md
+└── story-1.3-admin-page.md
+```
+
+Reference the [master-build-plan.md](mdc:ai-docs/end-to-end-features/master-build-plan.md) for the complete list of Epics and Stories.

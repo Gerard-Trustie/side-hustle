@@ -1,0 +1,214 @@
+---
+description: Use this rule when writing or fixing tests for React components, especially those using UI libraries like Radix UI or shadcn/ui. Apply when encountering test failures related to component rendering, element selection, or UI interactions
+globs: 
+alwaysApply: false
+---
+# React Component Testing Best Practices
+
+## Overview
+
+This rule provides guidance for testing React components, particularly when using advanced UI libraries like Radix UI or shadcn/ui. Proper testing practices ensure that tests accurately verify component behavior while being resilient to implementation details.
+
+## Mocking UI Components
+
+### 1. Mock at the Right Level
+
+- **Mock high-level components** rather than primitives:
+  ```jsx
+  // ✅ DO: Mock the imported components
+  jest.mock('@/components/ui/dropdown-menu', () => {...});
+  
+  // ❌ DON'T: Mock the library primitives directly
+  jest.mock('@radix-ui/react-dropdown-menu', () => {...});
+  ```
+
+- **Use data-testid attributes** for reliable component selection:
+  ```jsx
+  // In mocks
+  return {
+    DropdownMenuItem: ({ children, onClick }) => (
+      <button onClick={onClick} data-testid="dropdown-item">
+        {children}
+      </button>
+    )
+  };
+  ```
+
+### 2. Handle Component Hierarchies
+
+- **Mock all dependencies** used by the component under test:
+  ```jsx
+  // Mock all UI components used
+  jest.mock('@/components/ui/dropdown-menu', () => {...});
+  jest.mock('@/components/ui/button', () => {...});
+  jest.mock('@/components/ui/tooltip', () => {...});
+  ```
+
+- **Respect component props** in your mocks:
+  ```jsx
+  AlertDialog: ({ children, open }) => 
+    open ? <div data-testid="alert-dialog">{children}</div> : null,
+  ```
+
+## Testing UI Interactions
+
+### 1. Find Elements Reliably
+
+- **Prefer data-testid** over role or text matching when testing complex UI components:
+  ```jsx
+  // ✅ DO: Use data-testid selectors
+  const menuItems = screen.getAllByTestId('dropdown-item');
+  
+  // ❌ DON'T: Rely solely on roles which may not be consistent
+  const buttons = screen.getAllByRole('button');
+  ```
+
+- **Use content matching carefully**:
+  ```jsx
+  // For lists of similar items, find by content within a specific container
+  const editMenuItem = Array.from(menuItems).find(item => 
+    item.textContent?.includes('Edit')
+  );
+  ```
+
+### 2. Handle Conditional Elements
+
+- **Check element existence** before interacting:
+  ```jsx
+  if (editMenuItem) {
+    fireEvent.click(editMenuItem);
+  }
+  ```
+
+- **Test dynamic content appearance**:
+  ```jsx
+  // For modals, dialogs, or other conditional UI
+  expect(screen.getByTestId('alert-dialog')).toBeInTheDocument();
+  ```
+
+## Testing Asynchronous Behavior
+
+### 1. Modal and Dialog Testing
+
+- **Use proper async testing** for dialogs and modals:
+  ```jsx
+  // Trigger action that shows a dialog
+  fireEvent.click(deleteButton);
+  
+  // Verify dialog appears
+  expect(screen.getByTestId('alert-dialog')).toBeInTheDocument();
+  
+  // Interact with dialog
+  fireEvent.click(screen.getByTestId('alert-dialog-action'));
+  
+  // Verify the outcome
+  expect(mockDeleteHandler).toHaveBeenCalled();
+  ```
+
+### 2. Event Handler Verification
+
+- **Check that handlers are called** with proper parameters:
+  ```jsx
+  expect(mockOnEdit).toHaveBeenCalledTimes(1);
+  expect(mockOnEdit).toHaveBeenCalledWith("expectedArgument");
+  ```
+
+## Component Testing Structure
+
+### 1. Test Organization
+
+- Organize tests logically with descriptive names
+- Set up common test infrastructure in `beforeEach`
+- Test individual features separately
+- Include happy path and error cases
+
+### 2. Mock Cleanup
+
+- **Reset mocks between tests**:
+  ```jsx
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  ```
+
+## Common Pitfalls
+
+### 1. Radix UI Component Testing
+
+- **asChild prop handling**: Radix UI's `asChild` prop can cause issues with standard component mocking
+- **Portal rendering**: Components that use portals may not appear in the expected DOM container
+- **Compound components**: Components with multiple parts may need special handling
+
+### 2. Testing Library Misuse
+
+- **Avoid excessive waitFor()**: Only use async testing when necessary
+- **Choose correct queries**: Use the most appropriate query method for each situation
+- **Test user behavior, not implementation**: Focus on what users do, not internal component state
+
+### Examples
+
+#### Testing a Component with Dropdown
+
+```jsx
+import { render, screen, fireEvent } from '@testing-library/react';
+import { MyComponent } from './MyComponent';
+
+// Mock all UI dependencies
+jest.mock('@/components/ui/dropdown-menu', () => ({
+  DropdownMenu: ({ children }) => <div>{children}</div>,
+  DropdownMenuContent: ({ children }) => <div data-testid="dropdown-content">{children}</div>,
+  DropdownMenuItem: ({ children, onClick }) => (
+    <button onClick={onClick} data-testid="dropdown-item">{children}</button>
+  ),
+  DropdownMenuTrigger: ({ children }) => <div data-testid="dropdown-trigger">{children}</div>,
+}));
+
+describe('MyComponent', () => {
+  it('calls handler when menu item is clicked', () => {
+    const mockHandler = jest.fn();
+    render(<MyComponent onAction={mockHandler} />);
+    
+    // Find and click the menu item
+    const menuItems = screen.getAllByTestId('dropdown-item');
+    const actionItem = Array.from(menuItems)
+      .find(item => item.textContent?.includes('Action'));
+    
+    if (actionItem) {
+      fireEvent.click(actionItem);
+    }
+    
+    expect(mockHandler).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+#### Testing a Modal Component
+
+```jsx
+import { render, screen, fireEvent } from '@testing-library/react';
+import { ModalComponent } from './ModalComponent';
+
+// Mock dialog components
+jest.mock('@/components/ui/dialog', () => ({
+  Dialog: ({ children, open }) => open ? <div data-testid="dialog">{children}</div> : null,
+  DialogContent: ({ children }) => <div data-testid="dialog-content">{children}</div>,
+  DialogFooter: ({ children }) => <div data-testid="dialog-footer">{children}</div>,
+  DialogClose: ({ children, onClick }) => (
+    <button data-testid="dialog-close" onClick={onClick}>{children}</button>
+  ),
+}));
+
+describe('ModalComponent', () => {
+  it('closes when cancel button is clicked', () => {
+    const mockClose = jest.fn();
+    render(<ModalComponent open={true} onClose={mockClose} />);
+    
+    // Find and click close button
+    fireEvent.click(screen.getByTestId('dialog-close'));
+    
+    expect(mockClose).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+By following these guidelines, you'll create tests that are accurate, resilient to implementation changes, and focused on verifying the actual user experience rather than implementation details.

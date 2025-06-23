@@ -1,0 +1,37 @@
+---
+description: Guidelines for creating robust Node.js scripts using TypeScript, including proper structure, argument parsing, error handling, file operations, and testing patterns. Use this when building CLI tools, data processing scripts, or utility scripts."  Keywords: Node.js scripts, CLI tools, argument parsing, TypeScript scripts, error handling, file operations, script testing
+globs: 
+alwaysApply: false
+---
+# Node.js Script Development Guidelines
+
+## Script Structure and TypeScript
+
+- Use TypeScript for all scripts with proper `.ts` extension
+- Include shebang line: `#!/usr/bin/env node`
+- Add JSDoc header explaining purpose, inputs, and usage
+- Structure scripts with a main async function and proper error handling
+- Always explicitly type parameters and return values
+
+## Command Line Arguments and Configuration
+
+- Parse arguments consistently with a helper function
+- Support standard flags like `--help`, `--dry-run`, `--verbose`
+- Load environment variables with dotenv from appropriate files
+- Validate required environment variables and arguments early
+
+## Error Handling and File Operations
+
+- Create typed custom error classes for better error handling
+- Implement graceful shutdown with signal handlers
+- Use fs.promises API for file operations instead of sync methods
+- Handle paths correctly with path.resolve/path.join
+- Normalize paths and validate file existence
+
+## Logging and Testing
+
+- Create consistent logging with different levels (info, warn, error)
+- Add colorized output for better readability
+- Make scripts testable by extracting business logic
+- Create test helpers to mock file system and command line args
+- Document script usage with examples in code headers and README

@@ -1,0 +1,44 @@
+{
+  "hustleId": "sell-on-etsy",           // PK
+  "name": "Sell Handmade Goods on Etsy",
+  "category": "Create & Sell",
+  "primaryAttributes": {
+    "skillLevel": "Intermediate",
+    "timeCommitment": "Medium",
+    "upfrontCost": "Low",
+    "incomePotential": "££",
+    "locationType": "Online",
+    "platformRequired": "Etsy"
+  },
+  "secondaryAttributes": {
+    "deviceNeeded": "Laptop required",
+    "assetsNeeded": "Crafting materials",
+    "interests": ["Creative", "DIY", "Fashion"],
+    "riskLevel": "Low",
+    "gettingPaidSpeed": "Weekly",
+    "flexibility": "Fully Flexible"
+  },
+  "description": "Sell handmade goods like jewelry or art via Etsy. It’s great for creatives looking to monetize a hobby. Success depends on branding and product quality.",
+  "tags": ["Trustie Gem", "Top 10", "Trending"],
+  "rating": 8.7,
+  "urls": {
+    "signupUrl": "https://www.etsy.com/sell",
+    "learnMoreUrl": "https://help.etsy.com/hc/en-gb/articles/115015663647"
+  },
+  "keywords": ["etsy", "handmade", "crafts", "jewelry", "side hustle", "sell online"],
+  "metaTags": {
+    "type": "Active",
+    "monetizationType": "Sales-based",
+    "engagementMode": "Solo"
+  },
+  "embeddingVector": [0.023, -0.015, 0.077, ...],
+  "isVerified": true,
+  "isActive": true,
+  "lastCheckedAt": "2025-06-06T12:00:00Z",
+  "curatedBy": "Skye AI",
+  "sourceUrls": [
+    "https://www.etsy.com/sell",
+    "https://www.bigcommerce.co.uk/blog/selling-on-etsy-uk/"
+  ],
+  "popularityScore": 87.3
+}

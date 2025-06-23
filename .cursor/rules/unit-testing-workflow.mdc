@@ -1,0 +1,145 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Unit Testing Workflow
+
+## Overview
+
+This rule provides guidelines for testing each unit of development before proceeding to the next step. Following a test-driven development approach ensures high-quality code, prevents regression issues, and validates that components meet their specifications.
+
+## Testing Types
+
+### Component Testing
+
+- **Unit tests**: Test individual components in isolation
+
+  - Verify props are handled correctly
+  - Test different component states
+  - Verify event handlers work properly
+  - Test accessibility features
+
+- **Integration tests**: Test component interactions
+
+  - Verify data flow between components
+  - Test parent-child component relationships
+  - Verify context providers work correctly
+
+- **Snapshot tests**: Ensure UI consistency
+  - Create snapshots for key component states
+  - Update snapshots intentionally when designs change
+
+### User Flow Testing
+
+- Test complete user workflows end-to-end
+- Verify error handling and recovery paths
+- Test responsive behavior across device sizes
+
+### Accessibility Testing
+
+- Run automated accessibility tests
+- Manually test keyboard navigation
+- Verify screen reader compatibility
+
+## Testing Workflow
+
+1. **Before Implementation**:
+
+   - Review the story specification thoroughly
+   - Identify testable requirements
+   - Create test cases based on acceptance criteria
+   - Consider edge cases and error scenarios
+
+2. **During Implementation**:
+
+   - Write tests alongside or before code implementation
+   - Run tests frequently while developing
+   - Update tests as requirements evolve
+
+3. **Before Marking as Complete**:
+   - Ensure all tests pass
+   - Verify test coverage meets project standards
+   - Check that all acceptance criteria have tests
+   - Run accessibility tests for UI components
+
+## Testing Tools
+
+- **Jest**: Primary testing framework
+- **React Testing Library**: For component testing
+- **Cypress**: For end-to-end testing
+- **jest-axe**: For accessibility testing
+- **MSW (Mock Service Worker)**: For API mocking
+
+## Testing Standards
+
+- Tests should be independent and repeatable
+- Use descriptive test names that express intent
+- Follow the AAA pattern (Arrange, Act, Assert)
+- Mock external dependencies appropriately
+- Keep tests focused and concise
+
+## Example Test Structure
+
+```tsx
+import { render, screen, fireEvent } from '@testing-library/react';
+import { axe } from 'jest-axe';
+import ComponentToTest from './ComponentToTest';
+
+describe('ComponentToTest', () => {
+  // Setup
+  const mockData = {
+    /* test data */
+  };
+  const mockFunction = jest.fn();
+
+  // Tests for functionality
+  it('should render correctly with default props', () => {
+    render(<ComponentToTest />);
+    expect(screen.getByRole('button')).toBeInTheDocument();
+  });
+
+  it('should call onAction when button is clicked', () => {
+    render(<ComponentToTest onAction={mockFunction} />);
+    fireEvent.click(screen.getByRole('button'));
+    expect(mockFunction).toHaveBeenCalledTimes(1);
+  });
+
+  // Tests for different states
+  it('should show loading state when isLoading is true', () => {
+    render(<ComponentToTest isLoading={true} />);
+    expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
+  });
+
+  it('should show error message when error is provided', () => {
+    render(<ComponentToTest error="Error message" />);
+    expect(screen.getByText('Error message')).toBeInTheDocument();
+  });
+
+  // Accessibility tests
+  it('should not have accessibility violations', async () => {
+    const { container } = render(<ComponentToTest />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+});
+```
+
+## Definition of Done for Testing
+
+- All tests pass
+- Test coverage meets or exceeds 80% for components
+- No known bugs or issues are present
+- All acceptance criteria have corresponding tests
+- Accessibility tests pass
+- Both success and error paths are tested
+- All edge cases are handled and tested
+- Tests run in a reasonable amount of time
+
+## Before Moving to Next Task
+
+1. Run the full test suite: `npm test`
+2. Verify all tests related to your component pass
+3. Fix any failing tests before proceeding
+4. Document any testing decisions or special test cases
+5. Request a code review that includes test review

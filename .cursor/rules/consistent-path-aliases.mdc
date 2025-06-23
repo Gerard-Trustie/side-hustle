@@ -1,0 +1,262 @@
+---
+description: This rule provides guidance for maintaining consistent path alias configurations (@/lib, @/components) across all project configuration files including tsconfig.json, jest.config.ts, and build tools like webpack. When path aliases are inconsistently defined between TypeScript configuration and test environments, developers encounter frustrating "Cannot find module" errors where imports work in one context but fail in another. Following this rule ensures seamless module resolution across development, testing, and build environments, preventing hard-to-debug import failures and improving developer experience.
+globs: 
+alwaysApply: false
+---
+# Path Alias Configuration
+
+## Consistent Path Alias Setup Across Project
+
+When setting up a project with path aliases (like `@/components`), ensure consistency across all configuration files to prevent module resolution issues during testing and build.
+
+### TypeScript Configuration (tsconfig.json)
+
+Start by defining your path aliases in `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/components/*": ["./src/components/*"]
+    }
+  }
+}
+```
+
+### Jest Configuration
+
+Jest requires its own module name mapping that must align with TypeScript:
+
+```typescript
+// jest.config.ts
+const customJestConfig = {
+  moduleNameMapper: {
+    // Handle module aliases with multiple possible locations
+    "^@/lib/(.*)$": ["<rootDir>/lib/$1", "<rootDir>/src/lib/$1"],
+    "^@/components/(.*)$": ["<rootDir>/src/components/$1"],
+    "^@/(.*)$": ["<rootDir>/src/$1"]
+  }
+}
+```
+
+### Next.js Configuration
+
+For Next.js projects, ensure the webpack configuration is also aligned:
+
+```typescript
+// next.config.js
+module.exports = {
+  webpack: (config) => {
+    // These should be consistent with tsconfig.json paths
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, './src'),
+      '@/lib': path.resolve(__dirname, './lib'),
+      '@/components': path.resolve(__dirname, './src/components')
+    };
+    return config;
+  }
+}
+```
+
+### Common Pitfalls
+
+1. **Inconsistent paths:** If `@/lib` points to `./src/lib` in tsconfig but to `./lib` in Jest, tests will fail to resolve modules.
+
+2. **Missing mappings:** Ensure all path aliases used in imports are defined in all configuration files.
+
+3. **Monorepo complexity:** In monorepos, each workspace needs its own consistent path configuration.
+
+4. **Directory structure changes:** If you move directories, update all path configurations simultaneously.
+
+Following this guide helps prevent the infamous error: `Cannot find module '@/path/to/module'` in test environments while it works in development.
+
+# Consistent Path Aliases
+
+This rule provides guidance for maintaining consistent path alias configurations (`@/lib`, `@/components`) across all project configuration files including `tsconfig.json`, `jest.config.ts`, and build tools like webpack.
+
+## Why Path Aliases Matter
+
+Path aliases allow us to create clean imports that are independent of the file's location in the project structure:
+
+```typescript
+// Without aliases (messy relative paths)
+import Button from '../../../components/Button';
+
+// With aliases (clean, location-independent)
+import Button from '@/components/Button';
+```
+
+When path aliases are inconsistently defined between TypeScript configuration and test environments, developers encounter frustrating "Cannot find module" errors where imports work in one context but fail in another.
+
+## Configuration Files to Keep in Sync
+
+Ensure path aliases are defined consistently across these files:
+
+1. `tsconfig.json` - For TypeScript compilation
+2. `jest.config.ts` (or `.js`) - For Jest testing
+3. `next.config.js` - For Next.js projects
+4. `.swcrc` - For SWC compiler config
+5. `webpack.config.js` - For custom webpack configuration
+6. `vite.config.ts` - For Vite projects
+
+## Standard Aliases for Hustle Hub
+
+Our project uses the following standard path aliases:
+
+```
+@/app            -> ./app
+@/components     -> ./components or ./app/components
+@/hooks          -> ./hooks or ./app/hooks
+@/lib            -> ./lib 
+@/utils          -> ./utils or ./app/utils
+@/styles         -> ./styles or ./app/styles
+@/types          -> ./types
+@/constants      -> ./constants
+@/config         -> ./config
+@/api            -> ./api or ./app/api
+@/services       -> ./services or ./app/services
+@/assets         -> ./assets or ./public
+@/store          -> ./store or ./app/store
+@/features       -> ./features
+```
+
+## Configuration Examples
+
+### TypeScript Configuration (tsconfig.json)
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/lib/*": ["lib/*"],
+      "@/utils/*": ["utils/*"],
+      "@/styles/*": ["styles/*"],
+      "@/types/*": ["types/*"],
+      "@/constants/*": ["constants/*"],
+      "@/config/*": ["config/*"],
+      "@/api/*": ["api/*"],
+      "@/services/*": ["services/*"],
+      "@/assets/*": ["assets/*"],
+      "@/store/*": ["store/*"],
+      "@/features/*": ["features/*"]
+    }
+  }
+}
+```
+
+### Jest Configuration (jest.config.ts)
+
+```typescript
+import { Config } from 'jest';
+import { pathsToModuleNameMapper } from 'ts-jest';
+import { compilerOptions } from './tsconfig.json';
+
+const config: Config = {
+  // ...other Jest config
+  moduleNameMapper: {
+    // Convert paths to Jest-compatible format
+    ...pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
+    // Additional mappings for static assets
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js'
+  }
+};
+
+export default config;
+```
+
+### Next.js Configuration (next.config.js)
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Path aliases are automatically handled by Next.js from tsconfig.json
+  reactStrictMode: true,
+  // Other Next.js config here
+};
+
+module.exports = nextConfig;
+```
+
+### Webpack Configuration
+
+```javascript
+const path = require('path');
+
+module.exports = {
+  // ...other webpack config
+  resolve: {
+    alias: {
+      '@/components': path.resolve(__dirname, 'components'),
+      '@/hooks': path.resolve(__dirname, 'hooks'),
+      '@/lib': path.resolve(__dirname, 'lib'),
+      '@/utils': path.resolve(__dirname, 'utils'),
+      '@/styles': path.resolve(__dirname, 'styles'),
+      '@/types': path.resolve(__dirname, 'types'),
+      '@/constants': path.resolve(__dirname, 'constants'),
+      '@/config': path.resolve(__dirname, 'config'),
+      '@/api': path.resolve(__dirname, 'api'),
+      '@/services': path.resolve(__dirname, 'services'),
+      '@/assets': path.resolve(__dirname, 'assets'),
+      '@/store': path.resolve(__dirname, 'store'),
+      '@/features': path.resolve(__dirname, 'features')
+    }
+  }
+};
+```
+
+## Troubleshooting Common Issues
+
+### Import Works in Code but Fails in Tests
+
+Symptoms:
+- TypeScript compiles without errors
+- Code runs fine in development
+- Tests fail with "Cannot find module '@/components/Button'"
+
+Solution:
+- Check `jest.config.ts` to ensure `moduleNameMapper` is correctly configured
+- Use `pathsToModuleNameMapper` from `ts-jest` to automatically sync with `tsconfig.json`
+
+### Import Works in Development but Fails in Production Build
+
+Symptoms:
+- Development server runs without issues
+- Production build fails with path resolution errors
+
+Solution:
+- Ensure build tool configuration (webpack, etc.) includes the correct aliases
+- For Next.js apps, verify that `tsconfig.json` paths are correctly set
+
+### Visual Studio Code Shows Import Errors
+
+Symptoms:
+- VSCode underlines imports with red squiggly lines
+- IntelliSense doesn't work for aliased imports
+
+Solution:
+- Ensure `tsconfig.json` is in the project root
+- Restart TypeScript server: Ctrl+Shift+P → "TypeScript: Restart TS Server"
+- Check VSCode settings for TypeScript paths resolution
+
+## Best Practices
+
+1. **Single Source of Truth**: Generate other config files from `tsconfig.json` when possible
+2. **Automate Synchronization**: Use tools like `ts-jest`'s `pathsToModuleNameMapper` to keep configs in sync
+3. **Documentation**: Keep this document updated when adding new path aliases
+4. **Consistency**: Use the same alias patterns across the entire codebase
+5. **Validation**: Set up CI checks to verify alias consistency across configs
+
+## Related Tools
+
+- [tsconfig-paths](mdc:https:/github.com/dividab/tsconfig-paths) - Load TypeScript path mappings at runtime
+- [tsconfig-paths-webpack-plugin](mdc:https:/github.com/dividab/tsconfig-paths-webpack-plugin) - Webpack plugin to use `tsconfig.json` paths
+- [jest-tsconfig-paths](mdc:https:/github.com/kulshekhar/jest-tsconfig-paths) - Jest transformer that uses `tsconfig.json` paths
+- [vite-tsconfig-paths](mdc:https:/github.com/aleclarson/vite-tsconfig-paths) - Vite plugin to use `tsconfig.json` paths

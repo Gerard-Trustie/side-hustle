@@ -1,0 +1,242 @@
+# Authentication Architecture Alignment Guide
+
+**Status**: Ready for Implementation  
+**Pattern**: Mirrors admin-app proven architecture
+
+This document shows how the Hustle Hub DynamoDB setup aligns with the admin-app authentication pattern, ensuring consistency and support from your colleague.
+
+## Architecture Comparison
+
+### admin-app (Proven) ➜ hustle-hub (New)
+
+| Component | admin-app | hustle-hub | Status |
+|-----------|-----------|------------|--------|
+| **Frontend Auth** | AWS Amplify + Cognito | AWS Amplify + Cognito | ✅ Identical |
+| **Database Access** | IAM + AWS SDK | IAM + AWS SDK | ✅ Identical |
+| **Environment Pattern** | `.env.local` variables | `.env.local` variables | ✅ Identical |
+| **Dependencies** | `@aws-sdk/lib-dynamodb` | `@aws-sdk/lib-dynamodb` | ✅ Identical |
+| **Server Actions** | "use server" pattern | "use server" pattern | ✅ Identical |
+| **Middleware** | Cognito cookie checking | Cognito cookie checking | ✅ Identical |
+
+## Key Files to Copy from admin-app
+
+### 1. Authentication Configuration
+```
+admin-app/src/utils/awsConfig.ts ➜ hustle-hub/src/lib/awsConfig.ts
+```
+
+### 2. Database Configuration  
+```
+admin-app/src/utils/dbConfig.ts ➜ hustle-hub/src/lib/dbConfig.ts
+```
+
+### 3. Server Utilities
+```
+admin-app/src/utils/server-utils.tsx ➜ hustle-hub/src/lib/server-utils.ts
+```
+
+### 4. Middleware
+```
+admin-app/src/middleware.ts ➜ hustle-hub/src/middleware.ts
+```
+
+## Environment Variables Alignment
+
+### admin-app (Current)
+```env
+# Cognito (Frontend)
+NEXT_PUBLIC_AWS_USER_POOLS_ID=eu-west-2_xxxxxxxxx
+NEXT_PUBLIC_AWS_USER_POOLS_WEB_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
+NEXT_PUBLIC_AWS_COGNITO_IDENTITY_POOL_ID=eu-west-2:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+NEXT_PUBLIC_AWS_REGION=eu-west-2
+
+# DynamoDB (Backend)
+AWS_REGION=eu-west-2
+AWS_TABLE_USER=AdminAppTable-development
+```
+
+### hustle-hub (New)
+```env
+# Cognito (Frontend) - SAME VALUES
+NEXT_PUBLIC_AWS_USER_POOLS_ID=eu-west-2_xxxxxxxxx
+NEXT_PUBLIC_AWS_USER_POOLS_WEB_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
+NEXT_PUBLIC_AWS_COGNITO_IDENTITY_POOL_ID=eu-west-2:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+NEXT_PUBLIC_AWS_REGION=eu-west-2
+
+# DynamoDB (Backend) - ONLY TABLE NAME DIFFERENT
+AWS_REGION=eu-west-2
+DYNAMODB_TABLE_NAME=HustleHubDirectory-development
+AWS_TABLE_NAME=HustleHubDirectory-development
+```
+
+## Authentication Flow (Identical)
+
+```
+1. User visits protected route
+2. Middleware checks Cognito cookies
+3. If authenticated: Allow access
+4. If not authenticated: Redirect to login
+5. Server actions use IAM role to access DynamoDB
+```
+
+## Implementation Steps for Alignment
+
+### Step 1: Copy Configuration Files
+```bash
+# Copy the working configurations from admin-app
+cp apps/admin-app/src/utils/awsConfig.ts apps/hustle-hub/src/lib/awsConfig.ts
+cp apps/admin-app/src/utils/dbConfig.ts apps/hustle-hub/src/lib/dbConfig.ts
+cp apps/admin-app/src/utils/server-utils.tsx apps/hustle-hub/src/lib/server-utils.ts
+cp apps/admin-app/src/middleware.ts apps/hustle-hub/src/middleware.ts
+```
+
+### Step 2: Update File Paths
+```typescript
+// Update imports in copied files:
+// @/utils/awsConfig → @/lib/awsConfig
+// @/utils/dbConfig → @/lib/dbConfig
+```
+
+### Step 3: Update Environment Variables
+```typescript
+// In dbConfig.ts, update table name reference:
+process.env.AWS_TABLE_USER → process.env.DYNAMODB_TABLE_NAME
+```
+
+### Step 4: Copy Dependencies
+```bash
+# Install exact same packages as admin-app
+npm install aws-amplify @aws-amplify/adapter-nextjs @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
+```
+
+## Server Action Pattern (Identical)
+
+### admin-app Example
+```typescript
+"use server";
+
+import { docClient } from "@/utils/dbConfig";
+import { GetCommand } from "@aws-sdk/lib-dynamodb";
+
+export const getUserBasicProfile = async (userId: string) => {
+  try {
+    const command = new GetCommand({
+      TableName: process.env.AWS_TABLE_USER,
+      Key: { userId, primarySK: "profile_basic" },
+    });
+    const { Item } = await docClient.send(command);
+    return Item;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+```
+
+### hustle-hub Example (Same Pattern)
+```typescript
+"use server";
+
+import { docClient } from "@/lib/dbConfig";
+import { QueryCommand } from "@aws-sdk/lib-dynamodb";
+
+export const getCategories = async () => {
+  try {
+    const command = new QueryCommand({
+      TableName: process.env.DYNAMODB_TABLE_NAME,
+      KeyConditionExpression: "PK = :pk",
+      ExpressionAttributeValues: { ":pk": "CATEGORIES" },
+    });
+    const { Items } = await docClient.send(command);
+    return Items || [];
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+```
+
+## Security Model (Identical)
+
+### Authentication Layers
+1. **Frontend**: Cognito User Pools manage user authentication
+2. **Middleware**: Checks Cognito session cookies for route protection  
+3. **Backend**: IAM role provides server-to-DynamoDB access
+4. **No Token Passing**: Server actions use IAM, not user tokens
+
+### IAM Role (Auto-Generated by CDK)
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem", 
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:eu-west-2:*:table/HustleHubDirectory-development*"
+      ]
+    }
+  ]
+}
+```
+
+## Testing Alignment
+
+### 1. Authentication Testing
+```bash
+# Both apps should have identical authentication behavior:
+# - Login redirects work
+# - Session persistence works  
+# - Route protection works
+# - Logout clears session
+```
+
+### 2. Database Testing
+```bash
+# Server actions should work identically:
+# - AWS SDK connects successfully
+# - IAM permissions work
+# - DynamoDB operations succeed
+```
+
+## Support Benefits
+
+### For Your Colleague
+1. **Familiar Architecture**: Identical to admin-app
+2. **Same Debugging Tools**: CloudWatch logs, DynamoDB console
+3. **Same Code Patterns**: Server actions, middleware, environment setup
+4. **Same Dependencies**: No new libraries to learn
+
+### For You
+1. **Proven Solution**: Uses battle-tested admin-app architecture
+2. **Easy Support**: Colleague can immediately help debug issues
+3. **Consistent Patterns**: Same coding style across both apps
+4. **Shared Knowledge**: Same mental model for both applications
+
+## Quick Start Checklist
+
+- [ ] Copy configuration files from admin-app
+- [ ] Update import paths and table names
+- [ ] Copy environment variables (update table name only)
+- [ ] Install same dependencies as admin-app
+- [ ] Test authentication flow
+- [ ] Test database operations
+- [ ] Deploy with CDK
+
+## Troubleshooting
+
+If you encounter issues, your colleague can help debug by:
+
+1. **Comparing Environment Variables**: Ensure format matches admin-app
+2. **Checking IAM Roles**: Verify permissions are similar to admin-app setup
+3. **Validating Cognito Config**: Confirm User Pool settings are correct
+4. **Testing Server Actions**: Use same debugging approach as admin-app
+
+This alignment ensures maximum support and minimal learning curve! 

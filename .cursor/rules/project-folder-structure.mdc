@@ -1,0 +1,221 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Use this rule whenever creating files or directories (using mkdir, touch, edit_file with new files, etc.) to ensure proper placement within the project structure. This rule defines the authoritative directory structure to prevent issues like dual app directories and maintains consistent architecture across the Hustle Hub application.
+
+# Project Folder Structure
+
+This document outlines the authoritative directory structure and file organization for the Hustle Hub application. It reflects both the current structure and best practices for future development.
+
+## Root Structure (Current)
+
+```
+/
+├── src/                    # Source directory containing the Next.js app
+│   ├── app/                # Next.js application (main web app)
+│   │   └── */              # Route directories
+│   │       └── components/ # Feature-specific components (CURRENT PATTERN)
+│   ├── components/         # Shared React components
+│   ├── lib/                # Utility functions and shared logic
+│   ├── types/              # TypeScript type definitions
+│   ├── scripts/            # Project-specific scripts
+│   └── supabase/           # Supabase configuration and types
+├── ai-docs/                # Documentation for LLMs and AI assistants
+├── docs/                   # Additional project documentation
+├── public/                 # Static assets
+├── scripts/                # Utility scripts for development
+├── .cursor/                # Cursor configuration
+├── .github/                # GitHub workflows and templates
+├── tests/                  # Test files and configurations
+├── package.json            # Root package configuration
+└── tsconfig.json           # TypeScript configuration
+```
+
+> **Note**: For new files, prefer using the src/ directory structure over the root directory to maintain organization.
+
+## Web Application Structure (`/src/app`)
+
+The web application follows Next.js App Router structure:
+
+```
+src/app/
+├── api/                    # API routes handler functions
+├── auth/                   # Authentication-related routes (current)
+├── admin/                  # Admin pages and components (current)
+│   ├── components/         # Admin-specific components (current)
+│   │   ├── tables/         # Table-related components
+│   │   └── listings/       # Listing-related components
+│   └── listings/           # Admin listings pages
+├── lib/                    # App-specific utility functions (future)
+│   ├── supabase/           # Supabase client and utilities
+│   ├── utils/              # General utilities
+│   ├── hooks/              # Custom React hooks
+│   └── config/             # Application configuration
+├── providers/              # React context providers (future)
+├── middleware.ts           # Next.js middleware
+├── globals.css             # Global CSS
+└── layout.tsx              # Root layout
+```
+
+## Component Organization (Current)
+
+Currently, the codebase follows two main patterns for component organization:
+
+### 1. Global Shared Components (`/src/components`)
+
+```
+src/components/
+├── ui/                     # Basic UI components (shadcn/ui components)
+├── forms/                  # Form-related components (future)
+├── layouts/                # Layout components (future)
+└── feature-specific/       # Components for specific features (future)
+```
+
+### 2. Feature-Specific Components (`/src/app/*/components`)
+
+```
+src/app/admin/components/   # Admin-specific components
+├── tables/                 # Table-related components
+│   ├── DataTable.tsx       # Reusable data table component
+│   ├── TablePagination.tsx # Table pagination component
+│   └── TableFilters.tsx    # Table filters component
+├── listings/               # Listing-specific components
+│   └── ListingActions.tsx  # Actions for listings
+├── AdminHeader.tsx         # Admin header component
+└── AdminSidebar.tsx        # Admin sidebar component
+```
+
+This pattern of feature-specific components within the app directory is acceptable and follows Next.js App Router pattern of colocation.
+
+## AI Documentation Structure (`/ai-docs`)
+
+Documentation for LLMs and AI assistants:
+
+```
+ai-docs/
+├── architecture/           # Architecture documentation for AI
+├── UI/                     # User Interface guidelines (current)
+├── end-to-end-features/    # End-to-end feature documentation (current)
+├── prd/                    # Product Requirements Documents
+├── templates/              # Documentation templates
+├── context/                # Context information for AI assistants (future)
+├── prompts/                # Prompt templates and examples (future)
+├── guidelines/             # Development guidelines for AI (future)
+└── API-guidelines/         # API design and implementation guidelines (future)
+```
+
+## Future Development Structure
+
+The following sections represent planned structure for future development:
+
+### Mobile Application Structure (Future)
+
+```
+mobile/
+├── src/
+│   ├── components/         # React Native components
+│   ├── screens/            # Full-screen components
+│   ├── navigation/         # Navigation configuration
+│   ├── services/           # API services and data access
+│   ├── hooks/              # Custom React hooks
+│   ├── utils/              # Utility functions
+│   └── types/              # TypeScript types
+├── assets/                 # Images, fonts, etc.
+├── app.json                # React Native configuration
+└── App.tsx                 # Application entry point
+```
+
+### Shared Code Structure (Future)
+
+```
+packages/
+├── ui/                     # Shared UI components
+├── hooks/                  # Shared hooks
+├── utils/                  # Shared utilities
+├── types/                  # Shared type definitions
+└── api/                    # Shared API clients and types
+```
+
+## Naming Conventions
+
+1. **Files and Directories**:
+   * Use kebab-case for directories: `user-profiles/`
+   * Use kebab-case for page files: `edit-profile.tsx`
+   * Use PascalCase for component files: `UserCard.tsx`
+   * Use camelCase for utility files: `formatDate.ts`
+
+2. **Components**:
+   * Each component should be in its own file named after the component
+   * Complex components may have their own directory with index.ts file
+
+3. **Next.js Special Files**:
+   * `page.tsx`: Route pages
+   * `layout.tsx`: Layout components
+   * `loading.tsx`: Loading states
+   * `error.tsx`: Error states
+   * `not-found.tsx`: 404 pages
+   * `route.ts`: API route handlers
+
+## Import Conventions
+
+Use absolute imports with path aliases:
+
+```typescript
+// Good
+import { Button } from '@/components/ui/button';
+import { formatDate } from '@/lib/utils';
+
+// Avoid
+import { Button } from '../../../../components/ui';
+import { formatDate } from '../../../lib/utils';
+```
+
+## Recommended Component Structure (For New Components)
+
+For new reusable components, consider organizing them as follows:
+
+```
+ComponentName/
+├── ComponentName.tsx       # Main component
+├── ComponentName.test.tsx  # Tests
+├── ComponentName.types.ts  # TypeScript types
+└── index.ts                # Export file
+```
+
+This structure works well for complex components with multiple related files. For simpler components, a single file approach is also acceptable.
+
+## Environment-specific Configuration
+
+1. **Environment Files**:
+   ```
+   .env                     # Default env vars
+   .env.local               # Local overrides (not committed)
+   .env.development         # Development-specific vars
+   .env.production          # Production-specific vars
+   ```
+
+## Important Guidelines
+
+1. **MAINTAIN the existing `src/app` structure**. Do not create dual directory structures (e.g., both `/app` and `/src/app`). 
+   
+2. **Always follow the Next.js App Router conventions** for the web application.
+   
+3. **NEW FILES should be placed in their appropriate `src/` subdirectories** rather than in the root directory, even if similar files currently exist at the root level.
+   
+4. **Keep related files close** to where they are used:
+   - Feature-specific components in `/src/app/*/components/`
+   - Shared components in `/src/components/`
+
+5. **Feature flags and configuration** should be centralized in `/src/app/lib/config`.
+
+6. **Documentation** for developers and general project documentation should be added to the `/ai-docs` directory.
+
+7. **Type definitions** should be close to where they are used, with shared types in `/src/types/`.
+
+8. **Assets** should be placed in the `/public` directory for the web app and future `/mobile/assets` for the mobile app.
+
+9. **Server-only code** should be clearly marked with the "use server" directive in Next.js server components.
+
+10. **Gradual Migration**: As the project evolves, continue migrating files from the root to their appropriate locations in the `src/` directory.

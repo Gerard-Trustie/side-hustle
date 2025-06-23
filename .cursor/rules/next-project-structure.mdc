@@ -1,0 +1,74 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Next.js Project Structure Best Practices
+
+## Directory Structure
+
+The project uses a `/src` directory structure with Next.js App Router. Follow these guidelines to maintain consistency:
+
+1. **All application code must be inside `/src` directory**
+   - Pages and app router components in `/src/app`
+   - Shared components in `/src/components`
+   - Utility functions in `/src/lib`
+   - Type definitions in `/src/types` or `/types`
+
+2. **Never create folders at the root level that duplicate those in `/src`**
+   - ❌ Avoid: `/app` and `/src/app` existing simultaneously
+   - ❌ Avoid: `/lib` and `/src/lib` existing simultaneously 
+
+3. **Use path aliases consistently**
+   - Import from `@/components/...` not `../../components/...`
+   - Ensure all aliases defined in `tsconfig.json` map to `/src` paths
+   - Current aliases:
+     - `@/*` → `./src/*`
+     - `@/lib/*` → `./src/lib/*`
+     - `@/components/ui/*` → `./src/components/ui/*`
+
+## Client Components
+
+When using client components with React hooks that require hydration:
+
+1. Mark client components with `'use client';` directive at the top
+2. Wrap components using data-fetching hooks like `useSearchParams()` in `<Suspense>` boundaries
+3. Split components into logical parts to minimize client-side JavaScript
+
+Example of proper hook usage with Suspense:
+
+```tsx
+'use client';
+
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+
+// Component that uses hooks that require hydration
+function SearchComponent() {
+  const searchParams = useSearchParams();
+  // ...component logic
+}
+
+// Export a wrapped version to prevent hydration errors
+export default function SearchWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchComponent />
+    </Suspense>
+  );
+}
+```
+
+## Handling Type Definitions
+
+For external integrations like Supabase:
+
+1. Generate type definitions directly from the source when possible:
+   ```bash
+   npx supabase gen types typescript --project-id YOUR_PROJECT_ID
+   ```
+
+2. Use explicit type assertions only when absolutely necessary
+3. Create interfaces that accurately model your database schema
+4. Validate that database tables and RPC functions are properly typed
+5. Keep type definitions in sync with database schema changes

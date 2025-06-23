@@ -1,0 +1,381 @@
+---
+description: Apply this rule when debugging failures or unexpected behavior in any part of the codebase, particularly when the cause isn't immediately obvious. Use with error messages, test failures, or when implementing fixes to ensure systematic analysis and robust solutions
+globs: 
+alwaysApply: false
+---
+# Debugging and Root Cause Analysis Workflow
+
+## Overview
+
+This rule provides a structured approach for diagnosing, analyzing, and resolving bugs and issues in the Hustle Hub codebase. Following a systematic process helps you identify root causes faster and implement more robust solutions, whether you're dealing with simple bugs or complex multi-layered problems.
+
+## When to Apply This Rule
+
+Apply this rule when:
+- Debugging failures or unexpected behavior in any part of the codebase
+- Addressing complex issues that cross multiple system boundaries
+- Working with test failures, especially in UI components
+- Investigating performance problems or inconsistent behavior
+- Implementing fixes that need to address root causes, not just symptoms
+
+## Systematic Analysis Process
+
+### 1. Issue Definition
+
+Begin by clearly defining the issue:
+
+- Document exact error messages, stack traces, and symptoms
+- Identify when and where the issue occurs with specific, reproducible steps
+- Clarify what was expected vs. what actually happened
+- Note environmental context (browser, device, user role, etc.)
+- Capture relevant logs, screenshots, and error messages
+- Determine whether the issue is reproducible and how consistently
+- Assess the scope of impact (isolated vs. widespread)
+
+Example definition for test failures:
+```
+Test failures in ListingActions.test.tsx:
+- Error: "Unable to find an accessible element with the role 'button' and name `/edit/i`"
+- Tests fail consistently on CI and locally
+- Tests were previously passing
+```
+
+### 2. Hypothesis Generation
+
+Brainstorm possible causes before diving into fixes:
+
+- Consider multiple possible explanations, avoiding early fixation on one
+- Think across layers (UI, state, API, build config, etc.)
+- Look for recent changes that might have caused the issue
+- Consider library version updates or dependencies
+- Document each hypothesis with a clear, testable statement
+
+Consider multiple layers:
+- UI/Component issues
+- State management problems
+- API/Data fetching failures
+- Backend/Database issues
+- Authentication/Authorization errors
+- Network/Infrastructure problems
+- Environment-specific issues
+
+Example hypotheses for test failures:
+```
+1. Component implementation changed but tests weren't updated
+2. Test expectations don't match component behavior
+3. Mocking approach is incorrect for the component structure
+4. UI library rendering differently than expected
+```
+
+### 3. Evidence Collection
+
+Gather information to evaluate your hypotheses:
+
+- Read error messages carefully, including the full stack trace
+- Examine the relevant code and its dependencies
+- Check when the issue started (git blame/history)
+- Reproduce the issue in controlled environments
+- Add targeted debug logging or breakpoints
+- Review recent code changes (git blame/history)
+- Check error monitoring systems (if available)
+- Verify database state and query performance
+- Inspect network requests and responses
+- Create minimal reproduction cases when possible
+
+Example evidence collection:
+```
+- Examined ListingActions component - uses Radix UI DropdownMenuItem 
+- Tests are looking for button roles but DropdownMenuItems don't have this role
+- Mock implementation doesn't properly handle component hierarchy
+```
+
+### 4. Hypothesis Testing
+
+Test your hypotheses systematically:
+
+- Make focused changes to validate or invalidate each hypothesis
+- Start with the simplest explanations first
+- Modify test or code behavior in isolation to confirm cause
+- Work methodically rather than making multiple changes at once
+- Implement diagnostic logging/instrumentation
+- Use progressive isolation to identify faulty components
+- Apply binary search methodology to narrow down causes
+- Document all test outcomes, even negative results
+- Verify that fixes address the root issue, not just symptoms
+
+Example hypothesis testing:
+```
+- Modified test to log all available roles - confirmed dropdown items aren't buttons
+- Changed component mock to use data-testid instead of roles - test passed
+- Tested with completely new mock approach to confirm solution works
+```
+
+### 5. Solution Implementation
+
+Once the root cause is identified, implement a solution:
+
+- Address the root cause, not just the symptoms
+- Consider maintainability and future changes
+- Add tests to prevent regression
+- Document your approach for future reference
+- Prioritize solutions based on:
+  - Effectiveness in addressing the root cause
+  - Implementation complexity
+  - Risk of introducing new issues
+  - Long-term maintainability
+- Create regression tests before implementing the fix
+- Consider temporary workarounds vs. permanent solutions
+
+Example solution:
+```
+- Updated test mocks to mock high-level UI components instead of primitives
+- Added data-testid attributes for reliable element selection
+- Added element existence checks before interactions
+- Created additional test cases to verify dialog behavior
+```
+
+## Technical Investigation Tools
+
+### Frontend Issues
+
+- **Browser DevTools**:
+  - Network tab for API requests
+  - Console for errors and logs
+  - Performance tab for bottlenecks
+  - Elements for DOM inspection
+  
+- **React Debugging**:
+  - React DevTools for component inspection
+  - State management debugging (Zustand, Redux, etc.)
+  - Jest tests to validate component behavior
+
+- **Component Testing Issues**:
+  - **Asynchronous Updates**: Use waitFor or find* queries
+  - **Element Selection**: Try different queries (getBy*, queryBy*, findBy*)
+  - **Component Isolation**: Mock dependencies appropriately
+  - **Event Handling**: Ensure events trigger correctly
+
+### Backend Issues
+
+- **Supabase debugging**:
+  - Dashboard monitoring
+  - Database query analysis
+  - Function logs and performance metrics
+  - API request inspection
+
+- **Server-side debugging**:
+  - Logs analysis
+  - Request tracing
+  - Performance monitoring
+  - Database query analysis
+
+### Cross-cutting Concerns
+
+- End-to-end tests with Playwright
+- Network request monitoring
+- Environment variable verification
+- Dependency version compatibility checks
+
+## Common Debugging Techniques
+
+### Isolating Variables
+
+When faced with complex issues:
+
+- Change one thing at a time
+- Use binary search approaches (eliminate half the variables)
+- Create minimal test cases
+- Comment out sections of code to narrow down issues
+
+### Effective Logging
+
+Strategic logging can quickly identify issues:
+
+- Log at critical decision points
+- Include relevant context in log messages
+- Use different log levels appropriately
+- For test debugging, use console.log at strategic points
+
+Example effective logging:
+```tsx
+// Before clicking
+console.log('Available elements:', screen.debug());
+
+// After state change
+console.log('State after update:', newState);
+
+// For complex objects
+console.log('Props received:', JSON.stringify(props, null, 2));
+```
+
+### Reading Stack Traces
+
+Extract maximum information from error stacks:
+
+- Focus on the first occurrence of your code in the stack
+- Note the exact line and column numbers
+- Pay attention to the sequence of function calls
+- Look for patterns in repeated errors
+
+## Test-Specific Troubleshooting
+
+### React Component Testing
+
+Common patterns and solutions for React testing:
+
+- **Asynchronous Updates**: Use waitFor or find* queries
+- **Element Selection**: Try different queries (getBy*, queryBy*, findBy*)
+- **Component Isolation**: Mock dependencies appropriately
+- **Event Handling**: Ensure events trigger correctly
+
+Example test debugging approach:
+```tsx
+// Debug render output
+render(<MyComponent {...props} />);
+screen.debug(); // Logs the current state of the DOM
+
+// Check what queries might work
+console.log(
+  'Possible text matches:',
+  screen.getAllByText(/./i).map(el => el.textContent)
+);
+
+// Try different queries
+const element = screen.queryByText('Submit') || 
+                screen.queryByRole('button', { name: /submit/i }) ||
+                screen.queryByTestId('submit-button');
+```
+
+### Jest Mocking Issues
+
+Troubleshoot common Jest mocking problems:
+
+- **Mock Path Issues**: Ensure you're mocking the correct module path
+- **Mock Implementation**: Make sure mocks return appropriate values
+- **Mock Reset**: Clear mocks between tests
+- **Mock Verification**: Check that mocks are called as expected
+
+Example Jest mock debugging:
+```tsx
+// Check if mock is working
+console.log('Mock implementation:', jest.isMockFunction(myMock));
+console.log('Mock calls:', myMock.mock.calls);
+
+// Debug mock structure
+console.log('Mock module structure:', Object.keys(mockedModule));
+```
+
+## Documentation For Future Prevention
+
+When fixing significant bugs, document:
+
+1. **Issue Description**: What happened and how it manifested
+2. **Root Cause**: The underlying problem that caused the issue
+3. **Fix Approach**: How you resolved it
+4. **Prevention**: How to prevent similar issues
+5. **Lessons Learned**: What this issue reveals about system weaknesses
+
+Example documentation in PR or commit:
+```
+Fixed test failures in ListingActions component tests
+
+Issue: Tests were failing because they tried to find button elements 
+by role when the component uses DropdownMenuItem components instead.
+
+Root cause: The mocking approach didn't properly simulate the actual 
+component structure, and relied on implementation details (button roles)
+that didn't match the actual component.
+
+Fix: Updated mocks to focus on high-level UI components and used
+data-testid attributes for more reliable selection.
+
+Prevention: Added examples to README showing proper way to test
+components with complex UI libraries.
+```
+
+## Analysis Template for Complex Issues
+
+For complex issues, use this template to document your analysis:
+
+```markdown
+## Issue: [Brief Title]
+
+### Symptoms
+- Detailed description of the problem
+- Steps to reproduce
+- Error messages/logs
+
+### Impact
+- Users affected
+- Functionality compromised
+- Business impact
+
+### Hypotheses
+1. [Hypothesis A]: [Supporting evidence] [Testing approach]
+2. [Hypothesis B]: [Supporting evidence] [Testing approach]
+3. [Hypothesis C]: [Supporting evidence] [Testing approach]
+
+### Investigation Results
+- Tests performed and outcomes
+- Evidence collected
+- Root cause determination
+
+### Solution
+- Approach selected
+- Implementation details
+- Alternative approaches considered
+
+### Verification
+- How the fix was tested
+- Before/after metrics
+- Regression testing performed
+
+### Prevention
+- Similar issues to watch for
+- Monitoring/testing improvements
+- Documentation/training needed
+```
+
+## Real-world Example: React Component Test Failures
+
+```markdown
+## Issue: ListingActions component tests failing after UI library update
+
+### Symptoms
+- Test failures in ListingActions.test.tsx with error: "Unable to find an element with the role 'button' and name /edit/i"
+- CI pipeline failing consistently
+- Similar patterns in other component tests
+
+### Impact
+- Broken CI pipeline blocking deployments
+- Reduced confidence in test suite
+- Developer time spent on test maintenance
+
+### Hypotheses
+1. UI library rendering changed: Dropdown items might no longer use button role
+2. Mock implementation incorrect: Test mocks might not align with current component structure
+3. Test selectors too brittle: Tests might be using implementation details that changed
+
+### Investigation Results
+- Examined rendered component and confirmed dropdown items don't use button role
+- Mock for Radix UI components wasn't properly handling component hierarchy
+- Tests were using role selectors that are dependent on implementation details
+
+### Solution
+- Updated test mocks to focus on high-level shadcn/ui components instead of Radix primitives
+- Added data-testid attributes to component mocks for more reliable selection
+- Improved element selection with content-based finding within specific containers
+- Added checks for element existence before interactions
+
+### Verification
+- All tests now pass locally and in CI
+- Verified solution works across different components using similar patterns
+- Added more explicit test cases to verify dropdown and dialog behaviors
+
+### Prevention
+- Created React component testing documentation with examples
+- Added lint rule to prefer testid-based selection for complex components
+- Updated component testing template with best practices
+```
+
+By following this structured approach to debugging and root cause analysis, you'll find and fix issues more efficiently, create more robust solutions, and learn more effectively from each bug you resolve.

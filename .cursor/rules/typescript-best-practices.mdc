@@ -1,0 +1,392 @@
+---
+description: Core TypeScript guidelines for type safety, interface design, and code organization. Covers strict type checking, proper typing patterns, abstraction techniques, and project structure best practices. Use this rule when writing or refactoring TypeScript code to ensure consistency and type safety."  Keywords: TypeScript, type safety, interfaces, generics, null checking, abstraction layers, typed functions, error handling, code organization
+globs: 
+alwaysApply: false
+---
+# TypeScript Best Practices
+
+Core TypeScript guidelines for writing maintainable, type-safe code in the Hustle Hub project.
+
+## Type Safety Principles
+
+### Strict Type Checking
+
+Always enable strict type checking in `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true
+  }
+}
+```
+
+### Avoid Type Assertions
+
+Use proper type guards instead of type assertions when possible:
+
+```typescript
+// AVOID
+const value = someValue as string;
+
+// PREFER
+if (typeof someValue === 'string') {
+  const value = someValue; // Already typed as string
+}
+
+// AVOID
+const element = document.getElementById('element') as HTMLInputElement;
+
+// PREFER
+const element = document.getElementById('element');
+if (element instanceof HTMLInputElement) {
+  // element is now typed as HTMLInputElement
+}
+```
+
+### Null Handling
+
+Always handle null and undefined explicitly:
+
+```typescript
+// BAD
+function processUser(user: User | null) {
+  console.log(user.name); // May crash with null reference
+}
+
+// GOOD
+function processUser(user: User | null) {
+  if (!user) return;
+  console.log(user.name); // Safe
+}
+
+// GOOD - Null coalescing
+const userName = user?.name ?? 'Anonymous';
+```
+
+## API and Function Design
+
+### Function Signatures
+
+Write explicit return types for functions:
+
+```typescript
+// BAD - Implicit return type
+function getUser(id: string) {
+  return fetchUser(id);
+}
+
+// GOOD - Explicit return type
+function getUser(id: string): Promise<User | null> {
+  return fetchUser(id);
+}
+```
+
+### Async Functions
+
+All async functions should return properly typed Promises:
+
+```typescript
+// BAD
+async function loadData() {
+  const response = await fetch('/api/data');
+  return response.json();
+}
+
+// GOOD
+async function loadData(): Promise<DataType> {
+  const response = await fetch('/api/data');
+  return response.json() as Promise<DataType>;
+}
+```
+
+### Function Parameters
+
+Use required parameters first, followed by optional parameters:
+
+```typescript
+// BAD
+function createUser(options?: UserOptions, name: string) {
+  // ...
+}
+
+// GOOD
+function createUser(name: string, options?: UserOptions) {
+  // ...
+}
+```
+
+## Interface and Type Design
+
+### Interface vs Type
+
+- Use `interface` for public API definitions that may be extended
+- Use `type` for complex types, unions, and intersections
+- Be consistent within related type definitions
+
+```typescript
+// Public API - use interface
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+// Complex type - use type alias
+type UserState = 'active' | 'inactive' | 'banned';
+
+// Function type - either works, but be consistent
+type ClickHandler = (event: MouseEvent) => void;
+// OR
+interface ClickHandler {
+  (event: MouseEvent): void;
+}
+```
+
+### Readonly Properties
+
+Use readonly for properties that shouldn't change:
+
+```typescript
+interface User {
+  readonly id: string;
+  name: string;
+}
+```
+
+### Generic Types
+
+Write descriptive generic type parameters:
+
+```typescript
+// BAD
+function getItem<T>(id: string): Promise<T> {
+  // ...
+}
+
+// GOOD
+function getItem<TItem>(id: string): Promise<TItem> {
+  // ...
+}
+
+// BETTER - With constraints
+function getItem<TItem extends DatabaseEntity>(id: string): Promise<TItem> {
+  // ...
+}
+```
+
+## React Component Types
+
+### Function Components
+
+Use proper typing for React components:
+
+```typescript
+// Props interface
+interface UserProfileProps {
+  userId: string;
+  showDetails?: boolean;
+}
+
+// Function component with typed props
+const UserProfile: React.FC<UserProfileProps> = ({ userId, showDetails = false }) => {
+  return (
+    // ...
+  );
+};
+
+// Alternative syntax
+function UserProfile({ userId, showDetails = false }: UserProfileProps): JSX.Element {
+  return (
+    // ...
+  );
+}
+```
+
+### Event Handlers
+
+Type event handlers properly:
+
+```typescript
+// Button click handler
+const handleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+  // ...
+};
+
+// Input change handler
+const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const newValue = event.target.value;
+  // ...
+};
+```
+
+### useState with Types
+
+Properly type React state:
+
+```typescript
+// With initial value
+const [count, setCount] = useState<number>(0);
+
+// With complex type and no initial value
+const [user, setUser] = useState<User | null>(null);
+```
+
+## Error Handling
+
+### Error Types
+
+Create specific error types:
+
+```typescript
+// Define error types
+type ApiError = {
+  status: number;
+  message: string;
+  code?: string;
+};
+
+// Function that returns error or data
+async function fetchData(): Promise<{ data?: DataType; error?: ApiError }> {
+  try {
+    const response = await fetch('/api/data');
+    if (!response.ok) {
+      return {
+        error: {
+          status: response.status,
+          message: await response.text()
+        }
+      };
+    }
+    return { data: await response.json() };
+  } catch (err) {
+    return {
+      error: {
+        status: 500,
+        message: err instanceof Error ? err.message : 'Unknown error'
+      }
+    };
+  }
+}
+```
+
+### Error Handling Pattern
+
+Use consistent error handling:
+
+```typescript
+const { data, error } = await fetchData();
+
+if (error) {
+  // Handle error case
+  console.error(`Error fetching data: ${error.message}`);
+  return <ErrorDisplay error={error} />;
+}
+
+// Now we know data exists
+return <DataDisplay data={data} />;
+```
+
+## Project Structure
+
+### Type Organization
+
+Organize types in dedicated files:
+
+```
+src/
+  types/
+    entities.ts      # Database entity interfaces
+    api.ts           # API request/response types
+    store.ts         # Redux/state management types
+    props.ts         # Common component prop types
+```
+
+### Barrel Files
+
+Use barrel files (`index.ts`) to export related types:
+
+```typescript
+// types/index.ts
+export * from './entities';
+export * from './api';
+export * from './store';
+export * from './props';
+
+// Usage elsewhere
+import { User, ApiResponse } from '@/types';
+```
+
+### Path Aliases
+
+Use consistent path aliases for imports:
+
+```typescript
+// tsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@lib/*": ["src/lib/*"],
+      "@types/*": ["src/types/*"]
+    }
+  }
+}
+
+// Usage
+import { Button } from '@components/ui';
+import { fetchUser } from '@lib/api';
+import type { User } from '@types/entities';
+```
+
+## Discriminated Unions
+
+Use discriminated unions for state management:
+
+```typescript
+// Request state pattern
+type RequestState<TData, TError> =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: TData }
+  | { status: 'error'; error: TError };
+
+// Usage
+type UserState = RequestState<User, ApiError>;
+
+function UserProfile() {
+  const userState: UserState = { status: 'loading' };
+  
+  // Type-safe handling with exhaustive checks
+  switch (userState.status) {
+    case 'idle':
+      return <button>Load User</button>;
+    case 'loading':
+      return <Spinner />;
+    case 'success':
+      return <div>{userState.data.name}</div>;
+    case 'error':
+      return <div>Error: {userState.error.message}</div>;
+  }
+}
+```
+
+## Common Pitfalls to Avoid
+
+1. **Using `any` type**: Avoid using `any` as it defeats TypeScript's purpose.
+2. **Non-exhaustive checks**: Ensure all cases in unions are handled.
+3. **Ignoring TypeScript errors**: Don't use `@ts-ignore` without good reason.
+4. **Inconsistent type naming**: Follow a consistent naming convention.
+5. **Deep nesting of types**: Break complex types into smaller, reusable ones.
+6. **Over-engineering types**: Prefer simpler types when they're sufficient.
+7. **Forgetting nullability**: Always consider `null` and `undefined` cases.
+8. **Type duplication**: Extract reusable types to avoid duplication.

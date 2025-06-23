@@ -1,0 +1,35 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# shadcn-component-usage
+
+## When to use shadcn/ui components
+
+Always prefer shadcn/ui components over building components from scratch. shadcn/ui is not a traditional component library but a collection of reusable components that you can copy and paste into your project.
+
+### Core principles:
+
+1. **Check First**: Before creating any new UI component, check if shadcn/ui has a component that serves your purpose.
+
+2. **Use the CLI**: Add components via the shadcn CLI using:
+   ```bash
+   npx shadcn-ui@latest add [component-name]
+   ```
+
+3. **Composition over Creation**: Compose existing shadcn components to create more complex interfaces.
+
+4. **Styling Guidelines**:
+   - Modify components via Tailwind classes
+   - Keep shadcn's component structure intact
+   - Use composition patterns like rendering slots and children
+
+5. **When to customize**:
+   - For styling adjustments: use Tailwind or CSS variables
+   - For behavioral changes: extend through composition first
+   - Only modify component source code when absolutely necessary
+
+6. **Available Components**: Check https://ui.shadcn.com/docs/components for the full component list before creating new ones.
+
+Remember: The shadcn philosophy is "This is not a component library. It is how you build your component library."

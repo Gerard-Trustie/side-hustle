@@ -1,0 +1,13 @@
+---
+description: Use this when creating unit tests
+globs: 
+alwaysApply: false
+---
+TESTING RULE: 
+Each unit test should have a clear purpose and verify specific behavior. 
+
+Write separate tests for positive cases (what should happen when inputs are valid) and negative cases (how the system handles invalid inputs or error conditions). 
+
+Name tests descriptively to document the expected behavior. 
+
+Focus on testing outcomes rather than implementation details, and maintain independence between tests.

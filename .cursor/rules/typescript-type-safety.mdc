@@ -1,0 +1,79 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# TypeScript Type Safety Practices
+
+## Database Schema Types
+
+This project uses Supabase with TypeScript. For proper type safety:
+
+1. **Keep database types in sync with actual schema**
+   - Run `npx supabase gen types typescript --project-id nabtobkgqtxawifjxkec` after any schema changes
+   - Update `types/supabase.ts` with the generated types
+
+2. **Follow the Database type structure**
+   ```typescript
+   export type Database = {
+     public: {
+       Tables: {
+         // Table definitions
+       },
+       Views: {
+         // View definitions
+       },
+       Functions: {
+         // RPC function definitions
+       },
+       // ...other schema elements
+     }
+   }
+   ```
+
+3. **When accessing Supabase tables and RPCs, ensure proper typing:**
+   ```typescript
+   // ✅ Correctly typed table access
+   const { data, error } = await supabase
+     .from('admins')
+     .select('*');
+   
+   // ✅ Correctly typed RPC call
+   const { data, error } = await supabase
+     .rpc('is_admin', { uid: userId });
+   ```
+
+## IDE and Type Cache Management
+
+If TypeScript errors occur that don't match actual code:
+
+1. **Restart TypeScript server**
+   - VS Code: Cmd+Shift+P → "TypeScript: Restart TS Server"
+
+2. **Clear TypeScript build cache**
+   - Delete `tsconfig.tsbuildinfo` file
+   - Run `npm run build` to regenerate
+
+3. **If "ghost files" appear with red strikethrough**
+   - Fully reload VS Code window (Cmd+Shift+P → "Developer: Reload Window")
+   - If errors persist, manually touch the affected file or recreate it briefly
+
+## Type Assertions Last Resort
+
+Only use type assertions when TypeScript can't infer types correctly:
+
+```typescript
+// ✅ Use discriminated unions when possible
+type Result<T> = 
+  | { success: true; data: T }
+  | { success: false; error: Error };
+
+// ⚠️ Last resort - use type assertions
+// Use this pattern only when TypeScript and runtime behavior don't match
+const rpcClient = supabase as unknown as {
+  rpc: (fn: string, params?: Record<string, unknown>) => 
+    Promise<{ data: boolean; error: Error | null }>;
+};
+```
+
+Prefer explicit typing over `any` or `unknown` whenever possible.

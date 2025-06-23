@@ -1,0 +1,35 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# verify-existing-implementation
+
+## Always check documentation before implementing
+
+Before implementing any feature or component, always check existing documentation and implementation status to avoid duplication or inconsistent approaches.
+
+### Key documentation to check:
+
+1. **Master Build Plan**: [master-build-plan.md](mdc:ai-docs/end-to-end-features/master-build-plan.md)
+   - Contains the complete project roadmap
+   - Details which stories are completed (marked with [x])
+   - Provides implementation details for each story
+
+2. **Epic-specific documentation**:
+   - [Epic 0: Project Setup](mdc:ai-docs/end-to-end-features/epic-0-Project-Setup/)
+   - [Epic 1: Data Model](mdc:ai-docs/end-to-end-features/epic-1-Data-Model/)
+   - [Epic 2: Public Directory](mdc:ai-docs/end-to-end-features/epic-2-Public-Directory/)
+   - [Epic 3: Listing Details](mdc:ai-docs/end-to-end-features/epic-3-Listing-Details/)
+   - [Epic 4: Auth and Account](mdc:ai-docs/end-to-end-features/epic-4-Auth-and-Account/)
+   - [Epic 5: Share and SEO](mdc:ai-docs/end-to-end-features/epic-5-Share-and-SEO/)
+
+### Implementation process:
+
+1. Check the Master Build Plan to determine if the feature is already implemented
+2. Review the relevant epic documentation for implementation details
+3. Verify code files mentioned in documentation to understand current implementation
+4. Only implement new code if the feature is not already built, or needs extension
+5. Follow existing patterns, styles and approaches when modifying or extending existing code
+
+Always prefer extending existing implementations rather than creating duplicates or alternative approaches.
